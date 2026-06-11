@@ -1,0 +1,288 @@
+// Курсова робота з ОП, варіант 10 — Сайт онлайн-новин.
+// Діаграма класів у форматі Graphviz DOT.
+// Рендер:  dot -Tpng docs/class_diagram.dot -o docs/class_diagram.png
+
+digraph ClassDiagram {
+    graph [
+        rankdir=BT,
+        bgcolor="white",
+        fontname="Helvetica",
+        labelloc="t",
+        label=< <B>Сайт онлайн-новин — діаграма класів (варіант 10)</B> >,
+        fontsize=16,
+        splines=spline,
+        nodesep=0.5,
+        ranksep=0.85
+    ];
+    node [shape=none, fontname="Helvetica", fontsize=11];
+    edge [fontname="Helvetica", fontsize=10, color="#444444"];
+
+    // ==================== ДОМЕН ====================
+    DateTime [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#FAFAFA" COLOR="#1d4ed8">
+            <TR><TD BGCOLOR="#DCE7FF"><B>DateTime</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                − timestamp_ : long long<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + DateTime(y, mo, d, h, mi)<BR ALIGN="LEFT"/>
+                + now() : DateTime<BR ALIGN="LEFT"/>
+                + fromIso(s) : DateTime<BR ALIGN="LEFT"/>
+                + toIso() : string<BR ALIGN="LEFT"/>
+                + toHuman() : string<BR ALIGN="LEFT"/>
+                + epochSeconds() : long long<BR ALIGN="LEFT"/>
+                + operator&lt;(o) : bool<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    User [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#FAFAFA" COLOR="#1d4ed8">
+            <TR><TD BGCOLOR="#DCE7FF"><I><B>User</B></I><BR/><FONT POINT-SIZE="9">«abstract»</FONT></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                # id_ : int<BR ALIGN="LEFT"/>
+                # username_ : string<BR ALIGN="LEFT"/>
+                # email_ : string<BR ALIGN="LEFT"/>
+                # passwordHash_ : string<BR ALIGN="LEFT"/>
+                # registeredAt_ : DateTime<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + id() / username() / email()<BR ALIGN="LEFT"/>
+                + passwordHash() / registeredAt()<BR ALIGN="LEFT"/>
+                + <I>role() : string</I><BR ALIGN="LEFT"/>
+                + canPublish() : bool<BR ALIGN="LEFT"/>
+                + display() : string<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    Author [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#FAFAFA" COLOR="#1d4ed8">
+            <TR><TD BGCOLOR="#DCE7FF"><B>Author</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                − bio_ : string<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + Author(id, username, email,<BR ALIGN="LEFT"/>
+                &nbsp;&nbsp;&nbsp;&nbsp;hash, registered, bio)<BR ALIGN="LEFT"/>
+                + bio() : string<BR ALIGN="LEFT"/>
+                + setBio(s) : void<BR ALIGN="LEFT"/>
+                + role() : "author"<BR ALIGN="LEFT"/>
+                + canPublish() : true<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    Category [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#FAFAFA" COLOR="#1d4ed8">
+            <TR><TD BGCOLOR="#DCE7FF"><B>Category</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                − id_ : int<BR ALIGN="LEFT"/>
+                − name_ : string<BR ALIGN="LEFT"/>
+                − description_ : string<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + id() : int<BR ALIGN="LEFT"/>
+                + name() : string<BR ALIGN="LEFT"/>
+                + description() : string<BR ALIGN="LEFT"/>
+                + slug() : string<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    Tag [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#FAFAFA" COLOR="#1d4ed8">
+            <TR><TD BGCOLOR="#DCE7FF"><B>Tag</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                − id_ : int<BR ALIGN="LEFT"/>
+                − name_ : string<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + id() : int<BR ALIGN="LEFT"/>
+                + name() : string<BR ALIGN="LEFT"/>
+                + slug() : string<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    News [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#FAFAFA" COLOR="#1d4ed8">
+            <TR><TD BGCOLOR="#DCE7FF"><B>News</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                − id_ : int<BR ALIGN="LEFT"/>
+                − authorId_ : int<BR ALIGN="LEFT"/>
+                − categoryId_ : int<BR ALIGN="LEFT"/>
+                − tagIds_ : vector&lt;int&gt;<BR ALIGN="LEFT"/>
+                − title_ : string<BR ALIGN="LEFT"/>
+                − content_ : string<BR ALIGN="LEFT"/>
+                − publishedAt_ : DateTime<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + getters / setters<BR ALIGN="LEFT"/>
+                + excerpt(maxChars) : string<BR ALIGN="LEFT"/>
+                + setTags(ids) : void<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    SortBy [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#FFF7E0" COLOR="#aa6f00">
+            <TR><TD BGCOLOR="#FFE4A8"><FONT POINT-SIZE="9">«enum»</FONT><BR/><B>SortBy</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                Date<BR ALIGN="LEFT"/>
+                Title<BR ALIGN="LEFT"/>
+                Author<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    SortDirection [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#FFF7E0" COLOR="#aa6f00">
+            <TR><TD BGCOLOR="#FFE4A8"><FONT POINT-SIZE="9">«enum»</FONT><BR/><B>SortDirection</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                Ascending<BR ALIGN="LEFT"/>
+                Descending<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    SearchCriteria [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#FAFAFA" COLOR="#1d4ed8">
+            <TR><TD BGCOLOR="#DCE7FF"><B>SearchCriteria</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + titleContains : optional&lt;string&gt;<BR ALIGN="LEFT"/>
+                + categoryId : optional&lt;int&gt;<BR ALIGN="LEFT"/>
+                + tagId : optional&lt;int&gt;<BR ALIGN="LEFT"/>
+                + authorId : optional&lt;int&gt;<BR ALIGN="LEFT"/>
+                + from : optional&lt;DateTime&gt;<BR ALIGN="LEFT"/>
+                + to : optional&lt;DateTime&gt;<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + matches(News) : bool<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    NewsRepository [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#FAFAFA" COLOR="#1d4ed8">
+            <TR><TD BGCOLOR="#DCE7FF"><B>NewsRepository</B><BR/><FONT POINT-SIZE="9">«aggregate root»</FONT></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                − mutex_ : mutex<BR ALIGN="LEFT"/>
+                − authors_ : vector&lt;unique_ptr&lt;Author&gt;&gt;<BR ALIGN="LEFT"/>
+                − categories_ : vector&lt;Category&gt;<BR ALIGN="LEFT"/>
+                − tags_ : vector&lt;Tag&gt;<BR ALIGN="LEFT"/>
+                − news_ : vector&lt;News&gt;<BR ALIGN="LEFT"/>
+                − nextAuthorId_ / Category / Tag / News<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + registerAuthor(...) : int<BR ALIGN="LEFT"/>
+                + findAuthorByUsername / ById<BR ALIGN="LEFT"/>
+                + addCategory / addTag / ensureTag<BR ALIGN="LEFT"/>
+                + addNews(...) : int<BR ALIGN="LEFT"/>
+                + updateNews(...) : bool<BR ALIGN="LEFT"/>
+                + deleteNews(id) : bool<BR ALIGN="LEFT"/>
+                + getNews(id) : optional&lt;News&gt;<BR ALIGN="LEFT"/>
+                + search(criteria, sort, dir)<BR ALIGN="LEFT"/>
+                + categories() / tags() / authors()<BR ALIGN="LEFT"/>
+                + loadFromFile / saveToFile<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    // ==================== HTTP-ШАР ====================
+    SessionStore [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#F0FFF0" COLOR="#0a7d21">
+            <TR><TD BGCOLOR="#C4F0C4"><B>SessionStore</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                − mutex_ : mutex<BR ALIGN="LEFT"/>
+                − sessions_ : unordered_map&lt;string, Entry&gt;<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + create(authorId) : string<BR ALIGN="LEFT"/>
+                + lookup(token) : optional&lt;int&gt;<BR ALIGN="LEFT"/>
+                + destroy(token) : void<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    Sha256 [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#FFFAF0" COLOR="#aa6f00">
+            <TR><TD BGCOLOR="#FFE4A8"><FONT POINT-SIZE="9">«utility»</FONT><BR/><B>Auth</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + hashPassword(plain) : string<BR ALIGN="LEFT"/>
+                + verifyPassword(plain, stored) : bool<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    Html [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#FFFAF0" COLOR="#aa6f00">
+            <TR><TD BGCOLOR="#FFE4A8"><FONT POINT-SIZE="9">«utility»</FONT><BR/><B>Html</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + escapeHtml(s) : string<BR ALIGN="LEFT"/>
+                + nl2br(escaped) : string<BR ALIGN="LEFT"/>
+                + renderLayout(title, body, user) : string<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    Router [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#FFFAF0" COLOR="#aa6f00">
+            <TR><TD BGCOLOR="#FFE4A8"><FONT POINT-SIZE="9">«utility»</FONT><BR/><B>Router</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + registerRoutes(server, repo,<BR ALIGN="LEFT"/>
+                &nbsp;&nbsp;&nbsp;sessions, dataFile) : void<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    // ==================== ЗВ'ЯЗКИ ====================
+    // Спадкування (порожня трикутна стрілка): Author -> User
+    Author -> User [arrowhead=empty, style=solid];
+
+    // Композиція (закрашений ромб): NewsRepository володіє об'єктами Author і News.
+    NewsRepository -> Author  [dir=back, arrowtail=diamond, arrowhead=none, label="1\n0..*"];
+    NewsRepository -> News    [dir=back, arrowtail=diamond, arrowhead=none, label="1\n0..*"];
+
+    // Агрегація (порожній ромб): рубрики і теги — довідники.
+    NewsRepository -> Category [dir=back, arrowtail=odiamond, arrowhead=none, label="1\n0..*"];
+    NewsRepository -> Tag      [dir=back, arrowtail=odiamond, arrowhead=none, label="1\n0..*"];
+
+    // Атрибути типу DateTime (композиція по значенню).
+    News -> DateTime [dir=back, arrowtail=diamond, arrowhead=none, label="publishedAt"];
+    User -> DateTime [dir=back, arrowtail=diamond, arrowhead=none, label="registeredAt"];
+
+    // Асоціації News з іншими сутностями (за ідентифікаторами).
+    News -> Author    [arrowhead=vee, label="1   author"];
+    News -> Category  [arrowhead=vee, label="1   category"];
+    News -> Tag       [arrowhead=vee, label="0..*   tags"];
+
+    // Залежності (використання).
+    SearchCriteria -> News        [arrowhead=vee, style=dashed, label="«use»"];
+    SearchCriteria -> SortBy      [arrowhead=vee, style=dashed];
+    SearchCriteria -> SortDirection [arrowhead=vee, style=dashed];
+
+    Router -> NewsRepository [arrowhead=vee, style=dashed, label="«use»"];
+    Router -> SessionStore   [arrowhead=vee, style=dashed, label="«use»"];
+    Router -> Sha256         [arrowhead=vee, style=dashed, label="«use»"];
+    Router -> Html           [arrowhead=vee, style=dashed, label="«use»"];
+
+    // ==================== ПІДКЛАСТЕРИ ====================
+    subgraph cluster_domain {
+        label=<<B>Бібліотека news_domain</B> (предметна область)>;
+        labeljust="l";
+        style="rounded,filled";
+        color="#1d4ed8";
+        fillcolor="#F5F8FF";
+        DateTime; User; Author; Category; Tag; News;
+        SortBy; SortDirection; SearchCriteria; NewsRepository;
+    }
+    subgraph cluster_server {
+        label=<<B>Виконуваний файл news_server</B> (HTTP-шар)>;
+        labeljust="l";
+        style="rounded,filled";
+        color="#aa6f00";
+        fillcolor="#FFFCF2";
+        Router; SessionStore; Sha256; Html;
+    }
+}

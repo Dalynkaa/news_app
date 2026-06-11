@@ -1,0 +1,453 @@
+// АІС гуртків для школярів — діаграма класів UML (виправлена версія).
+// Рендер:  dot -Tpng -Gdpi=120 class_diagram.dot -o class_diagram.png
+
+digraph ClassDiagram {
+    graph [
+        rankdir=TB,
+        bgcolor="white",
+        fontname="Times New Roman",
+        labelloc="t",
+        label=< <B>АІС гуртків для школярів — діаграма класів UML</B> >,
+        fontsize=20,
+        splines=spline,
+        nodesep=0.45,
+        ranksep=0.85
+    ];
+    node [shape=none, fontname="Times New Roman", fontsize=11];
+    edge [fontname="Times New Roman", fontsize=10, color="#333333"];
+
+    // ============================================================
+    //                    КЛАСИ КОРИСТУВАЧІВ
+    // ============================================================
+
+    User [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#EEF5FF" COLOR="#1d4ed8">
+            <TR><TD BGCOLOR="#C9DBF7"><I><B>User</B></I><BR/><FONT POINT-SIZE="9">{abstract}</FONT></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                # userId : int<BR ALIGN="LEFT"/>
+                # login : String<BR ALIGN="LEFT"/>
+                # passwordHash : String<BR ALIGN="LEFT"/>
+                # email : String<BR ALIGN="LEFT"/>
+                # role : String<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + authorize(login, password) : boolean<BR ALIGN="LEFT"/>
+                + updateEmail(email) : void<BR ALIGN="LEFT"/>
+                + restorePassword() : void<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    Parent [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#EEF5FF" COLOR="#1d4ed8">
+            <TR><TD BGCOLOR="#C9DBF7"><B>Parent</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                - fullName : String<BR ALIGN="LEFT"/>
+                - phone : String<BR ALIGN="LEFT"/>
+                - address : String<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + registerParent() : void<BR ALIGN="LEFT"/>
+                + submitApplication(clubId) : Application<BR ALIGN="LEFT"/>
+                + cancelApplication(appId) : void<BR ALIGN="LEFT"/>
+                + payForLesson(amount) : Payment<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    Administrator [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#EEF5FF" COLOR="#1d4ed8">
+            <TR><TD BGCOLOR="#C9DBF7"><B>Administrator</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                - position : String<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + manageClubs() : void<BR ALIGN="LEFT"/>
+                + reviewApplication(app) : void<BR ALIGN="LEFT"/>
+                + generateReport() : Report<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    ClubLeader [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#EEF5FF" COLOR="#1d4ed8">
+            <TR><TD BGCOLOR="#C9DBF7"><B>ClubLeader</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                - qualification : String<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + markAttendance(lesson) : void<BR ALIGN="LEFT"/>
+                + viewParticipants() : List&lt;ChildProfile&gt;<BR ALIGN="LEFT"/>
+                + addMaterial(material) : void<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    // ============================================================
+    //                    КЛАСИ ПРЕДМЕТНОЇ ОБЛАСТІ
+    // ============================================================
+
+    ChildProfile [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#FFFFFF" COLOR="#333333">
+            <TR><TD BGCOLOR="#F0F0F0"><B>ChildProfile</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                - childId : int<BR ALIGN="LEFT"/>
+                - firstName : String<BR ALIGN="LEFT"/>
+                - lastName : String<BR ALIGN="LEFT"/>
+                - birthDate : Date<BR ALIGN="LEFT"/>
+                - schoolClass : String<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + calculateAge() : int<BR ALIGN="LEFT"/>
+                + updateProfile() : void<BR ALIGN="LEFT"/>
+                + getPreferences() : List&lt;Preference&gt;<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    Preference [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#FFFFFF" COLOR="#333333">
+            <TR><TD BGCOLOR="#F0F0F0"><B>Preference</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                - preferenceId : int<BR ALIGN="LEFT"/>
+                - name : String<BR ALIGN="LEFT"/>
+                - category : String<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + rename(name) : void<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    Club [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#FFF7DF" COLOR="#aa6f00">
+            <TR><TD BGCOLOR="#FFE6A8"><B>Club</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                - clubId : int<BR ALIGN="LEFT"/>
+                - name : String<BR ALIGN="LEFT"/>
+                - description : String<BR ALIGN="LEFT"/>
+                - direction : String<BR ALIGN="LEFT"/>
+                - maxPlaces : int<BR ALIGN="LEFT"/>
+                - minAge : int<BR ALIGN="LEFT"/>
+                - maxAge : int<BR ALIGN="LEFT"/>
+                - isActive : boolean<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + hasFreePlace() : boolean<BR ALIGN="LEFT"/>
+                + isAgeAllowed(age) : boolean<BR ALIGN="LEFT"/>
+                + updateInfo() : void<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    Schedule [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#FFF7DF" COLOR="#aa6f00">
+            <TR><TD BGCOLOR="#FFE6A8"><B>Schedule</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                - scheduleId : int<BR ALIGN="LEFT"/>
+                - startDate : Date<BR ALIGN="LEFT"/>
+                - endDate : Date<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + addLesson(lesson) : void<BR ALIGN="LEFT"/>
+                + changeLessonTime(id) : void<BR ALIGN="LEFT"/>
+                + getLessons() : List&lt;Lesson&gt;<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    Lesson [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#FFF7DF" COLOR="#aa6f00">
+            <TR><TD BGCOLOR="#FFE6A8"><B>Lesson</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                - lessonId : int<BR ALIGN="LEFT"/>
+                - topic : String<BR ALIGN="LEFT"/>
+                - dateTime : DateTime<BR ALIGN="LEFT"/>
+                - room : String<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + startLesson() : void<BR ALIGN="LEFT"/>
+                + finishLesson() : void<BR ALIGN="LEFT"/>
+                + changeRoom(room) : void<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    // ============================================================
+    //                    БІЗНЕС-СУТНОСТІ
+    // ============================================================
+
+    Application [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#EAFFEA" COLOR="#0a7d21">
+            <TR><TD BGCOLOR="#C4F0C4"><B>Application</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                - applicationId : int<BR ALIGN="LEFT"/>
+                - createdAt : DateTime<BR ALIGN="LEFT"/>
+                - status : String<BR ALIGN="LEFT"/>
+                - comment : String<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + create() : void<BR ALIGN="LEFT"/>
+                + approve() : void<BR ALIGN="LEFT"/>
+                + reject(reason) : void<BR ALIGN="LEFT"/>
+                + cancel() : void<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    Enrollment [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#EAFFEA" COLOR="#0a7d21">
+            <TR><TD BGCOLOR="#C4F0C4"><B>Enrollment</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                - enrollmentId : int<BR ALIGN="LEFT"/>
+                - enrollmentDate : Date<BR ALIGN="LEFT"/>
+                - status : String<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + confirm() : void<BR ALIGN="LEFT"/>
+                + archive() : void<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    WaitlistEntry [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#EAFFEA" COLOR="#0a7d21">
+            <TR><TD BGCOLOR="#C4F0C4"><B>WaitlistEntry</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                - entryId : int<BR ALIGN="LEFT"/>
+                - position : int<BR ALIGN="LEFT"/>
+                - createdAt : DateTime<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + moveUp() : void<BR ALIGN="LEFT"/>
+                + removeFromList() : void<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    AttendanceRecord [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#EAFFEA" COLOR="#0a7d21">
+            <TR><TD BGCOLOR="#C4F0C4"><B>AttendanceRecord</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                - recordId : int<BR ALIGN="LEFT"/>
+                - date : Date<BR ALIGN="LEFT"/>
+                - isPresent : boolean<BR ALIGN="LEFT"/>
+                - note : String<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + markPresent() : void<BR ALIGN="LEFT"/>
+                + markAbsent(note) : void<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    Payment [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#F2E8FF" COLOR="#6b3ea0">
+            <TR><TD BGCOLOR="#D9C2F5"><B>Payment</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                - paymentId : int<BR ALIGN="LEFT"/>
+                - amount : double<BR ALIGN="LEFT"/>
+                - status : String<BR ALIGN="LEFT"/>
+                - paidAt : DateTime<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + createPayment() : void<BR ALIGN="LEFT"/>
+                + checkStatus() : String<BR ALIGN="LEFT"/>
+                + confirm() : void<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    Notification [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#F2E8FF" COLOR="#6b3ea0">
+            <TR><TD BGCOLOR="#D9C2F5"><B>Notification</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                - notificationId : int<BR ALIGN="LEFT"/>
+                - text : String<BR ALIGN="LEFT"/>
+                - channel : String<BR ALIGN="LEFT"/>
+                - sentAt : DateTime<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + send() : void<BR ALIGN="LEFT"/>
+                + schedule(when) : void<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    Report [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#F2E8FF" COLOR="#6b3ea0">
+            <TR><TD BGCOLOR="#D9C2F5"><B>Report</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                - reportId : int<BR ALIGN="LEFT"/>
+                - reportType : String<BR ALIGN="LEFT"/>
+                - createdAt : DateTime<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + generate() : void<BR ALIGN="LEFT"/>
+                + exportToPdf() : File<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    // ============================================================
+    //              КЛАСИ-АДАПТЕРИ ДО ЗОВНІШНІХ СИСТЕМ
+    // ============================================================
+
+    PaymentAdapter [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#F2E8FF" COLOR="#6b3ea0">
+            <TR><TD BGCOLOR="#D9C2F5"><B>PaymentAdapter</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                - apiKey : String<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + process(payment) : boolean<BR ALIGN="LEFT"/>
+                + status(payment) : String<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    NotificationAdapter [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#F2E8FF" COLOR="#6b3ea0">
+            <TR><TD BGCOLOR="#D9C2F5"><B>NotificationAdapter</B></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                - channel : String<BR ALIGN="LEFT"/>
+            </TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + deliver(notification) : void<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    // ============================================================
+    //              ЗОВНІШНІ ІНТЕРФЕЙСИ (НЕ НАШ КОД)
+    // ============================================================
+
+    IPaymentGateway [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#EEEEEE" COLOR="#888888">
+            <TR><TD BGCOLOR="#D7D7D7"><FONT POINT-SIZE="9">«external»</FONT><BR/><I><B>IPaymentGateway</B></I></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + createInvoice(amount) : String<BR ALIGN="LEFT"/>
+                + getPaymentStatus(id) : String<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    INotificationService [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" BGCOLOR="#EEEEEE" COLOR="#888888">
+            <TR><TD BGCOLOR="#D7D7D7"><FONT POINT-SIZE="9">«external»</FONT><BR/><I><B>INotificationService</B></I></TD></TR>
+            <TR><TD ALIGN="LEFT" BALIGN="LEFT">
+                + sendMessage(to, text) : boolean<BR ALIGN="LEFT"/>
+                + sendReminder(lesson) : void<BR ALIGN="LEFT"/>
+            </TD></TR>
+        </TABLE>
+    >];
+
+    // ============================================================
+    //                              ЗВ'ЯЗКИ
+    // ============================================================
+
+    // -- 1. СПАДКУВАННЯ (порожній трикутник, суцільна) --
+    Parent        -> User [arrowhead=empty, style=solid];
+    Administrator -> User [arrowhead=empty, style=solid];
+    ClubLeader    -> User [arrowhead=empty, style=solid];
+
+    // -- 2. КОМПОЗИЦІЯ (закрашений ромб) --
+    Parent   -> ChildProfile [dir=back, arrowtail=diamond, arrowhead=none,
+                              taillabel="1", headlabel="1..*"];
+    Club     -> Schedule     [dir=back, arrowtail=diamond, arrowhead=none,
+                              taillabel="1", headlabel="1"];
+    Schedule -> Lesson       [dir=back, arrowtail=diamond, arrowhead=none,
+                              taillabel="1", headlabel="1..*"];
+
+    // -- 3. АГРЕГАЦІЯ (порожній ромб) --
+    ChildProfile -> Preference [dir=back, arrowtail=odiamond, arrowhead=none,
+                                taillabel="1", headlabel="0..*"];
+    Club         -> ClubLeader [dir=back, arrowtail=odiamond, arrowhead=none,
+                                taillabel="0..*", headlabel="1"];
+
+    // -- 4. АСОЦІАЦІЇ --
+    Parent       -> Application [arrowhead=none,
+                                  taillabel="1", headlabel="0..*"];
+    Application  -> Club        [arrowhead=none,
+                                  taillabel="0..*", headlabel="1"];
+    Application  -> ChildProfile [arrowhead=none,
+                                  taillabel="0..*", headlabel="1"];
+
+    // XOR-асоціація: Application -> Enrollment XOR WaitlistEntry
+    Application  -> Enrollment    [arrowhead=none,
+                                    taillabel="1", headlabel="0..1"];
+    Application  -> WaitlistEntry [arrowhead=none,
+                                    taillabel="1", headlabel="0..1"];
+    // Сама лінія {xor} між цими двома асоціаціями — додамо текстову позначку
+    XorNote [shape=note, label=< {xor} >,
+             style=filled, fillcolor="#FFFCEE", color="#aa6f00",
+             fontname="Times New Roman", fontsize=10];
+    XorNote -> Enrollment    [style=dashed, arrowhead=none, color="#aa6f00"];
+    XorNote -> WaitlistEntry [style=dashed, arrowhead=none, color="#aa6f00"];
+
+    Enrollment       -> Club         [arrowhead=none,
+                                       taillabel="0..*", headlabel="1"];
+    Enrollment       -> ChildProfile [arrowhead=none,
+                                       taillabel="0..*", headlabel="1"];
+
+    AttendanceRecord -> Lesson       [arrowhead=none,
+                                       taillabel="0..*", headlabel="1"];
+    AttendanceRecord -> Enrollment   [arrowhead=none,
+                                       taillabel="0..*", headlabel="1"];
+
+    Payment       -> Enrollment    [arrowhead=none,
+                                     taillabel="0..*", headlabel="1"];
+    Notification  -> User          [arrowhead=none,
+                                     taillabel="0..*", headlabel="1"];
+    Report        -> Administrator [arrowhead=none,
+                                     taillabel="0..*", headlabel="1"];
+
+    // -- 5. ЗАЛЕЖНОСТІ / ВИКОРИСТАННЯ --
+    Payment             -> PaymentAdapter      [style=dashed, arrowhead=vee, label="«use»"];
+    Notification        -> NotificationAdapter [style=dashed, arrowhead=vee, label="«use»"];
+    PaymentAdapter      -> IPaymentGateway     [style=dashed, arrowhead=vee, label="«use»"];
+    NotificationAdapter -> INotificationService [style=dashed, arrowhead=vee, label="«use»"];
+
+    // ============================================================
+    //                            КЛАСТЕРИ
+    // ============================================================
+    subgraph cluster_system {
+        label=<<B>Система, що проектується</B>>;
+        labeljust="l";
+        fontsize=14;
+        style="rounded,filled";
+        color="#1d4ed8";
+        fillcolor="#F5F8FF";
+        User; Parent; Administrator; ClubLeader;
+        ChildProfile; Preference;
+        Club; Schedule; Lesson;
+        Application; Enrollment; WaitlistEntry; AttendanceRecord;
+        Payment; Notification; Report;
+        PaymentAdapter; NotificationAdapter;
+        XorNote;
+    }
+    subgraph cluster_external {
+        label=<<B>Зовнішні системи</B>>;
+        labeljust="l";
+        fontsize=14;
+        style="rounded,filled";
+        color="#888888";
+        fillcolor="#F5F5F5";
+        IPaymentGateway; INotificationService;
+    }
+
+    // ============================================================
+    //                       ЛЕГЕНДА
+    // ============================================================
+    Legend [label=<
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="2" BGCOLOR="#FFFCEE" COLOR="#aa6f00">
+            <TR><TD COLSPAN="2"><B>Умовні позначення</B></TD></TR>
+            <TR><TD ALIGN="LEFT">───▷</TD><TD ALIGN="LEFT">Спадкування</TD></TR>
+            <TR><TD ALIGN="LEFT">◆───</TD><TD ALIGN="LEFT">Композиція</TD></TR>
+            <TR><TD ALIGN="LEFT">◇───</TD><TD ALIGN="LEFT">Агрегація</TD></TR>
+            <TR><TD ALIGN="LEFT">─────</TD><TD ALIGN="LEFT">Асоціація</TD></TR>
+            <TR><TD ALIGN="LEFT">- - -▷</TD><TD ALIGN="LEFT">Залежність «use»</TD></TR>
+            <TR><TD ALIGN="LEFT">{xor}</TD><TD ALIGN="LEFT">Виключна асоціація</TD></TR>
+        </TABLE>
+    >];
+}

@@ -1,0 +1,217 @@
+@startuml class_diagram
+' Курсова робота, варіант №10 — Сайт онлайн-новин.
+' Діаграма класів предметної області + класів веб-сервера.
+
+skinparam dpi 130
+skinparam shadowing false
+skinparam classBackgroundColor #FAFAFA
+skinparam classBorderColor #1d4ed8
+skinparam classAttributeIconSize 11
+skinparam packageBorderColor #999999
+skinparam packageBackgroundColor #FFFFFF
+skinparam ArrowColor #444444
+skinparam stereotypeCBackgroundColor #DCE7FF
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 12
+hide empty members
+
+title Сайт онлайн-новин — діаграма класів (варіант №10)
+
+' ============================================================
+' Пакет: news (предметна область / "доменна модель")
+' Реалізовано як статичну бібліотеку news_domain.
+' ============================================================
+package "news (domain library)" as DOMAIN <<Folder>> {
+
+    class DateTime {
+        - timestamp_ : long long
+        + DateTime()
+        + DateTime(year, month, day, hour, minute)
+        + static now() : DateTime
+        + static fromIso(s) : DateTime
+        + toIso() : string
+        + toHuman() : string
+        + epochSeconds() : long long
+        + operator<(other) : bool
+    }
+
+    abstract class User {
+        # id_ : int
+        # username_ : string
+        # email_ : string
+        # passwordHash_ : string
+        # registeredAt_ : DateTime
+        + id() : int
+        + username() : string
+        + email() : string
+        + passwordHash() : string
+        + registeredAt() : DateTime
+        + {abstract} role() : string
+        + {virtual} canPublish() : bool
+        + {virtual} display() : string
+    }
+
+    class Author {
+        - bio_ : string
+        + Author(id, username, email, hash, registered, bio)
+        + bio() : string
+        + setBio(s) : void
+        + role() : string
+        + canPublish() : bool
+    }
+
+    class Category {
+        - id_ : int
+        - name_ : string
+        - description_ : string
+        + id() : int
+        + name() : string
+        + description() : string
+        + slug() : string
+    }
+
+    class Tag {
+        - id_ : int
+        - name_ : string
+        + id() : int
+        + name() : string
+        + slug() : string
+    }
+
+    class News {
+        - id_ : int
+        - authorId_ : int
+        - categoryId_ : int
+        - tagIds_ : vector<int>
+        - title_ : string
+        - content_ : string
+        - publishedAt_ : DateTime
+        + id() : int
+        + title() : string
+        + content() : string
+        + authorId() : int
+        + categoryId() : int
+        + tagIds() : vector<int>
+        + publishedAt() : DateTime
+        + excerpt(maxChars) : string
+        + setTitle(s) : void
+        + setContent(s) : void
+        + setCategory(id) : void
+        + setTags(ids) : void
+    }
+
+    enum SortBy {
+        Date
+        Title
+        Author
+    }
+
+    enum SortDirection {
+        Ascending
+        Descending
+    }
+
+    class SearchCriteria {
+        + titleContains : optional<string>
+        + categoryId    : optional<int>
+        + tagId         : optional<int>
+        + authorId      : optional<int>
+        + from          : optional<DateTime>
+        + to            : optional<DateTime>
+        + matches(n : News) : bool
+    }
+
+    class NewsRepository {
+        - mutex_ : mutex
+        - authors_ : vector<unique_ptr<Author>>
+        - categories_ : vector<Category>
+        - tags_ : vector<Tag>
+        - news_ : vector<News>
+        - nextAuthorId_   : int
+        - nextCategoryId_ : int
+        - nextTagId_      : int
+        - nextNewsId_     : int
+        + registerAuthor(...) : int
+        + findAuthorByUsername(u) : Author*
+        + findAuthorById(id) : Author*
+        + addCategory(name, desc) : int
+        + addTag(name) : int
+        + ensureTag(name) : int
+        + addNews(...) : int
+        + updateNews(...) : bool
+        + deleteNews(id) : bool
+        + getNews(id) : optional<News>
+        + search(SearchCriteria, SortBy, SortDirection) : vector<News>
+        + categories() : vector<Category>
+        + tags() : vector<Tag>
+        + authors() : vector<Author*>
+        + loadFromFile(path) : bool
+        + saveToFile(path) : bool
+        + newsCount() : size_t
+    }
+}
+
+' Спадкування / композиція / асоціації в домені
+User <|-- Author
+
+NewsRepository "1" *-- "0..*" Author    : authors_
+NewsRepository "1" *-- "0..*" Category  : categories_
+NewsRepository "1" *-- "0..*" Tag       : tags_
+NewsRepository "1" *-- "0..*" News      : news_
+
+News "1" *-- "1" DateTime           : publishedAt_
+User "1" *-- "1" DateTime           : registeredAt_
+
+News "*" --> "1"  Author            : authorId
+News "*" --> "1"  Category          : categoryId
+News "*" --> "0..*" Tag             : tagIds
+
+SearchCriteria ..> News             : matches
+SearchCriteria --> SortBy
+SearchCriteria --> SortDirection
+
+' ============================================================
+' Пакет: news_server (інтерфейс — HTTP-сервер).
+' Реалізовано як виконуваний файл news_server, що використовує
+' зовнішню бібліотеку cpp-httplib для HTTP/1.1.
+' ============================================================
+package "news_server (HTTP layer)" as SERVER <<Folder>> {
+
+    class SessionStore {
+        - mutex_ : mutex
+        - sessions_ : unordered_map<string, Entry>
+        + create(authorId) : string
+        + lookup(token) : optional<int>
+        + destroy(token) : void
+    }
+
+    class "Sha256 (utility)" as Sha256 << (U,#FFD580) utility >> {
+        + sha256Hex(s) : string
+        + randomSalt() : string
+        + hashPassword(plain) : string
+        + verifyPassword(plain, stored) : bool
+    }
+
+    class "Html (utility)" as Html << (U,#FFD580) utility >> {
+        + escapeHtml(s) : string
+        + nl2br(escaped) : string
+        + renderLayout(title, body, user) : string
+    }
+
+    class "Router (registration)" as Router << (U,#FFD580) utility >> {
+        + registerRoutes(server, repo, sessions, file) : void
+    }
+}
+
+' Сторонні бібліотеки, які ми НЕ реалізуємо самі
+package "cpp-httplib (3rd party)" as HTTPLIB <<Library>> {
+    class "httplib::Server" as HSrv
+}
+
+Router ..> HSrv          : "Get / Post"
+Router ..> NewsRepository : "читає / змінює"
+Router ..> SessionStore   : "auth"
+Router ..> Sha256         : "hashPassword"
+Router ..> Html           : "renderLayout"
+
+@enduml
